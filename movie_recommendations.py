@@ -29,11 +29,12 @@ def pxy(x, y, prior, likelihood):
     prior - array such that prior[x] is the probability of x occurring
     likelihood 2D array such that likelihood[k,m] is the probability of k|m
     """
+
     ret_value = np.log(prior[x])
     for obs in y:
         ret_value += np.log(likelihood[obs, x])
         
-    return np.exp(ret_value)
+    return ret_value
     
 
 
@@ -101,20 +102,22 @@ def compute_posterior(prior, likelihood, y):
     # that the computer will just make it 0 rather than storing the right
     # value). You need to go to log-domain. Hint: this next line is a good
     # first step.
-    den = 0
+    den = []
     for x in range(M):
-        den += pxy(x,y,prior,likelihood)
+        den.append(pxy(x,y,prior,likelihood))
         
+    denom = scipy.misc.logsumexp(den)
+          
     posterior = []
     for i in range(M):
-        posterior.append(pxy(i , y, prior, likelihood) / den)
+        posterior.append(pxy(i , y, prior, likelihood) - denom)
 
     #
     # END OF YOUR CODE FOR PART (b)
     # -------------------------------------------------------------------------
 
     # do not exponentiate before this step
-    return np.array(posterior)
+    return np.array(np.exp(posterior))
 
 
 def compute_movie_rating_likelihood(M):
@@ -209,12 +212,39 @@ def infer_true_movie_ratings(num_observations=-1):
     # These are the output variables - it's your job to fill them.
     posteriors = np.zeros((num_movies, M))
     MAP_ratings = np.zeros(num_movies)
+    
+    for movie in movie_id_list:
+        ratings = get_ratings(movie)
+        if num_observations != -1:
+            ratings = ratings[:num_observations]
+        posteriors[movie] = compute_posterior(prior, likelihood, ratings)
+        MAP_ratings[movie] = np.argmax(posteriors[movie])
 
     #
     # END OF YOUR CODE FOR PART (d)
     # -------------------------------------------------------------------------
 
     return posteriors, MAP_ratings
+    
+def sort_movies(ratings):
+    """
+    List movies by name sorted by rating
+    
+    Inputs: ratings - array of movie ratings indexed by movie id
+    
+    Output: sorted list of couples of the form (movie name, rating) with
+    top rated movies appearing first
+    """
+    
+    sorted_index_list = ratings.argsort()[::-1]
+    sorted_movies = []
+    movie_ratings = []
+    for movie in sorted_index_list:
+        movie_ratings.append(ratings[movie])
+        sorted_movies.append(get_movie_name(movie))
+        
+        
+    return sorted_movies, movie_ratings
 
 
 def compute_entropy(distribution):
