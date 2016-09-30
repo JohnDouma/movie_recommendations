@@ -135,6 +135,15 @@ def compute_movie_rating_likelihood(M):
 
     # define the size to begin with
     likelihood = np.zeros((M, M))
+    for i in range(M):
+        for j in range(M):
+            if i == j:
+                likelihood[i,j] = 2
+            else:
+                likelihood[i,j] = 1/np.abs(i-j)
+
+    for col in range(M):
+        likelihood[:, col] /= likelihood[:, col].sum()
 
     # -------------------------------------------------------------------------
     # YOUR CODE GOES HERE FOR PART (c)
