@@ -18,6 +18,24 @@ import scipy
 import scipy.misc
 from sys import exit
 
+def pxy(x, y, prior, likelihood):
+    """
+    Calculates Pr(x,y1,...,yn) where x is a single value
+    and y is a vector
+    
+    Inputs:
+    x - single value
+    y - a vector of values
+    prior - array such that prior[x] is the probability of x occurring
+    likelihood 2D array such that likelihood[k,m] is the probability of k|m
+    """
+    ret_value = np.log(prior[x])
+    for obs in y:
+        ret_value += np.log(likelihood[obs, x])
+        
+    return np.exp(ret_value)
+    
+
 
 def compute_posterior(prior, likelihood, y):
     """
@@ -83,15 +101,20 @@ def compute_posterior(prior, likelihood, y):
     # that the computer will just make it 0 rather than storing the right
     # value). You need to go to log-domain. Hint: this next line is a good
     # first step.
-    log_prior = np.log(prior)
+    den = 0
+    for x in range(M):
+        den += pxy(x,y,prior,likelihood)
+        
+    posterior = []
+    for i in range(M):
+        posterior.append(pxy(i , y, prior, likelihood) / den)
 
     #
     # END OF YOUR CODE FOR PART (b)
     # -------------------------------------------------------------------------
 
     # do not exponentiate before this step
-    posterior = np.exp(log_answer)
-    return posterior
+    return np.array(posterior)
 
 
 def compute_movie_rating_likelihood(M):
