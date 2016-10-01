@@ -18,9 +18,9 @@ import scipy
 import scipy.misc
 from sys import exit
 
-def pxy(x, y, prior, likelihood):
+def logpxy(x, y, prior, likelihood):
     """
-    Calculates Pr(x,y1,...,yn) where x is a single value
+    Calculates ln(Pr(x,y1,...,yn)) where x is a single value
     and y is a vector
     
     Inputs:
@@ -28,6 +28,8 @@ def pxy(x, y, prior, likelihood):
     y - a vector of values
     prior - array such that prior[x] is the probability of x occurring
     likelihood 2D array such that likelihood[k,m] is the probability of k|m
+    
+    Output: natural log of the joint probability of x and and y 
     """
 
     ret_value = np.log(prior[x])
@@ -104,13 +106,13 @@ def compute_posterior(prior, likelihood, y):
     # first step.
     den = []
     for x in range(M):
-        den.append(pxy(x,y,prior,likelihood))
+        den.append(logpxy(x,y,prior,likelihood))
         
     denom = scipy.misc.logsumexp(den)
           
     posterior = []
     for i in range(M):
-        posterior.append(pxy(i , y, prior, likelihood) - denom)
+        posterior.append(logpxy(i , y, prior, likelihood) - denom)
 
     #
     # END OF YOUR CODE FOR PART (b)
