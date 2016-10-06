@@ -273,6 +273,10 @@ def compute_entropy(distribution):
 
     # -------------------------------------------------------------------------
     # YOUR CODE GOES HERE FOR PART (f)
+    entropy = 0
+    for prob in distribution:
+        if prob >= 1e-8:
+            entropy += prob * np.log2(1/prob)
     #
     # Be sure to:
     # - use log base 2
