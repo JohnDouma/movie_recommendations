@@ -313,7 +313,11 @@ def compute_true_movie_rating_posterior_entropies(num_observations):
     # YOUR CODE GOES HERE FOR PART (g)
     #
     # Make use of the compute_entropy function you coded in part (f).
-
+    posteriors, ratings = infer_true_movie_ratings(num_observations)
+    
+    posterior_entropies = []
+    for prob in posteriors:
+        posterior_entropies.append(compute_entropy(prob))
     #
     # END OF YOUR CODE FOR PART (g)
     # -------------------------------------------------------------------------
