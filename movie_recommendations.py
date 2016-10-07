@@ -322,8 +322,16 @@ def compute_true_movie_rating_posterior_entropies(num_observations):
     # END OF YOUR CODE FOR PART (g)
     # -------------------------------------------------------------------------
 
-    return posterior_entropies
+    return np.array(posterior_entropies)
 
+def plotEntropies(num_observations):
+    points = []
+    for n in range(1,num_observations+1):
+        entropies = compute_true_movie_rating_posterior_entropies(n)
+        points.append(np.mean(entropies))
+        
+    plt.plot(points)
+    plt.show()
 
 def main():
 
