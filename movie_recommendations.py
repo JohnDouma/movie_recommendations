@@ -216,7 +216,7 @@ def infer_true_movie_ratings(num_observations=-1):
     MAP_ratings = np.zeros(num_movies)
     
     for movie in movie_id_list:
-        ratings = get_ratings(movie)
+        ratings = movie_data_helper.get_ratings(movie)
         if num_observations != -1:
             ratings = ratings[:num_observations]
         posteriors[movie] = compute_posterior(prior, likelihood, ratings)
@@ -243,7 +243,7 @@ def sort_movies(ratings):
     movie_ratings = []
     for movie in sorted_index_list:
         movie_ratings.append(ratings[movie])
-        sorted_movies.append(get_movie_name(movie))
+        sorted_movies.append(movie_data_helper.get_movie_name(movie))
         
         
     return sorted_movies, movie_ratings
